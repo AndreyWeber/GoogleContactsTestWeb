@@ -1,0 +1,16 @@
+﻿@using Links
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@section Scripts
+{
+    <script type="text/javascript" src="@Links.Scripts.jquery_ui_1_8_24_min_js"></script>
+    <script type="text/javascript" src="@Links.Scripts.testweb_getGoogleContacts_js"></script>
+}
+
+<div>
+    @Html.ActionLink("Get Google contacts", MVC.Home.GoogleAuth())
+    <p></p>
+</div>
