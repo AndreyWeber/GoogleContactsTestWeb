@@ -3,6 +3,8 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Web.Mvc;
+using Google.Contacts;
+using Google.GData.Client;
 using Newtonsoft.Json;
 
 namespace GoogleContactsTestWeb.Controllers
@@ -70,10 +72,27 @@ namespace GoogleContactsTestWeb.Controllers
             var responseString = Encoding.UTF8.GetString(rawResponse);
             dynamic tokenData = JsonConvert.DeserializeObject(responseString);
 
-            rawResponse = client.DownloadData(String.Format("https://www.google.com/m8/feeds/contacts/default/full?access_token={0}&alt=json", tokenData.access_token));
-            responseString = Encoding.UTF8.GetString(rawResponse);
+            //rawResponse = client.DownloadData(String.Format("https://www.google.com/m8/feeds/contacts/default/full?access_token={0}", tokenData.access_token));
+            //responseString = Encoding.UTF8.GetString(rawResponse);
 
-            dynamic contactsData = JsonConvert.DeserializeObject(responseString);
+            //dynamic contactsData = JsonConvert.DeserializeObject(responseString);
+
+            var rs = new RequestSettings("Google Contacts Test", tokenData.access_token.ToString())
+            {
+                AutoPaging = true
+            };
+
+            var cr = new ContactsRequest(rs);
+
+            var contacts = cr.GetContacts();
+            foreach (var entry in contacts.Entries)
+            {
+                foreach (var email in entry.Emails)
+                {
+                    var nm = entry.Title;
+                    var em = email.Address;
+                }
+            }
 
             return View(Views.Index);
         }
