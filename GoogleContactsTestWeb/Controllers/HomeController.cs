@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using Google.Contacts;
 using Google.GData.Client;
+using Google.GData.Contacts;
 using Newtonsoft.Json;
+using WebGrease.Css.Extensions;
 
 namespace GoogleContactsTestWeb.Controllers
 {
@@ -84,14 +89,35 @@ namespace GoogleContactsTestWeb.Controllers
 
             var cr = new ContactsRequest(rs);
 
-            var contacts = cr.GetContacts();
-            foreach (var entry in contacts.Entries)
+            var rawContacts = cr.GetContacts();
+            var rawGroups = cr.GetGroups();
+
+            var groups = new List<String>();
+            foreach (var entry in rawGroups.Entries)
             {
-                foreach (var email in entry.Emails)
+                groups.Add(entry.Title);
+            }
+
+
+            var contacts = new List<Tuple<String, String>>();
+            foreach (var entry in rawContacts.Entries)
+            {
+                if (!entry.Emails.Any())
                 {
-                    var nm = entry.Title;
-                    var em = email.Address;
+                    continue;
                 }
+
+                var b = (from gm in entry.GroupMembership
+                    join rg in rawGroups.Entries on gm.HRef equals rg.AtomEntry.Id.AbsoluteUri
+                    where !rg.Title.ToLower().Equals("starred in android")
+                    select
+                        rg.Title.ToLower().Contains("system group")
+                            ? rg.Title.Split(new[] {':'})[1].Trim()
+                            : rg.Title)
+                    .ToList();
+
+                var tuple = new Tuple<string, string>(entry.Title, entry.Emails.First().Address);
+                contacts.Add(tuple);
             }
 
             return View(Views.Index);
