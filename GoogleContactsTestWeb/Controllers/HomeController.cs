@@ -43,7 +43,7 @@ namespace GoogleContactsTestWeb.Controllers
             const string oauthGoogleUrl = "https://accounts.google.com/o/oauth2/auth?scope={0}&redirect_uri={1}&response_type=code&client_id={2}&access_type=online&approval_prompt=force";
             const string googleApiScope = "https://www.google.com/m8/feeds";
             const string oauthRedirectUrl = "http://localhost:64901/GoogleAuthCallback";
-            const string googleClientId = "1051352266030-l2avpmbf9kk0s8b9eshqu6fkd0gee50g.apps.googleusercontent.com";
+            const string googleClientId = "";
             
             var authGoogleUrl = String.Format(
                 oauthGoogleUrl,
@@ -66,8 +66,8 @@ namespace GoogleContactsTestWeb.Controllers
 
             var parameters = new NameValueCollection
             {
-                { "client_id", "1051352266030-l2avpmbf9kk0s8b9eshqu6fkd0gee50g.apps.googleusercontent.com" },
-                { "client_secret", "5Ai2kKsRUK8Av5RehYB3rx7k" },
+                { "client_id", "" },
+                { "client_secret", "" },
                 { "grant_type", "authorization_code" },
                 { "redirect_uri", "http://localhost:64901/GoogleAuthCallback" },
                 { "code", code }
